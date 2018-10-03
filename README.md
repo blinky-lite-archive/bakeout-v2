@@ -1,1 +1,1 @@
-# teensy-pi-device-message-adapter
+# bakeout-v2-device-message-adapter
