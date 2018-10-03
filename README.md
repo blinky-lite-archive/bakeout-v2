@@ -1,1 +1,1 @@
-# teensy-pi-device-controller
+# bakeout-v2-device-controller
