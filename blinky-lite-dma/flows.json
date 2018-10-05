@@ -273,8 +273,8 @@
         "console": false,
         "tostatus": false,
         "complete": "false",
-        "x": 550,
-        "y": 280,
+        "x": 870,
+        "y": 300,
         "wires": []
     },
     {
@@ -309,8 +309,48 @@
         "crontab": "",
         "once": true,
         "onceDelay": "1",
-        "x": 400,
-        "y": 220,
+        "x": 380,
+        "y": 200,
+        "wires": [
+            [
+                "a66809de.9e4f08"
+            ]
+        ]
+    },
+    {
+        "id": "24c0354b.1593da",
+        "type": "inject",
+        "z": "5f562f66.a301e",
+        "name": "",
+        "topic": "getOverITrip",
+        "payload": "0",
+        "payloadType": "num",
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "1",
+        "x": 380,
+        "y": 240,
+        "wires": [
+            [
+                "a66809de.9e4f08"
+            ]
+        ]
+    },
+    {
+        "id": "336da3aa.686a8c",
+        "type": "inject",
+        "z": "5f562f66.a301e",
+        "name": "",
+        "topic": "getOverILeakTrip",
+        "payload": "0",
+        "payloadType": "num",
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "1",
+        "x": 370,
+        "y": 280,
         "wires": [
             [
                 "a66809de.9e4f08"
