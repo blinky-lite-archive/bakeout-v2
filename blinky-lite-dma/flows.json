@@ -100,7 +100,7 @@
         "type": "serial-port",
         "z": "",
         "serialport": "/dev/ttyS0",
-        "serialbaud": "115200",
+        "serialbaud": "9600",
         "databits": "8",
         "parity": "none",
         "stopbits": "1",
@@ -114,10 +114,10 @@
         "id": "79250bf3.365cc4",
         "type": "mqtt-broker",
         "z": "",
-        "name": "teensy-pi0-platform-broker",
-        "broker": "broker.shiftr.io",
+        "name": "blinky-lite-06",
+        "broker": "blinky-lite-06.local",
         "port": "1883",
-        "clientid": "dma",
+        "clientid": "device-message-adapter",
         "usetls": false,
         "compatmode": true,
         "keepalive": "60",
@@ -138,29 +138,9 @@
         "z": "5f562f66.a301e",
         "name": "Teensy",
         "serial": "21ff842d.62f36c",
-        "x": 950,
-        "y": 120,
+        "x": 850,
+        "y": 100,
         "wires": []
-    },
-    {
-        "id": "fe167ec8.cd0c6",
-        "type": "inject",
-        "z": "5f562f66.a301e",
-        "name": "",
-        "topic": "getLoopTime",
-        "payload": "true",
-        "payloadType": "bool",
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "x": 290,
-        "y": 120,
-        "wires": [
-            [
-                "cf17dffd.b2b37"
-            ]
-        ]
     },
     {
         "id": "ae4832e3.8167f",
@@ -168,8 +148,8 @@
         "z": "5f562f66.a301e",
         "name": "Teensy",
         "serial": "21ff842d.62f36c",
-        "x": 260,
-        "y": 220,
+        "x": 230,
+        "y": 440,
         "wires": [
             [
                 "db5238ac.522718"
@@ -186,40 +166,23 @@
         "console": false,
         "tostatus": false,
         "complete": "true",
-        "x": 770,
-        "y": 220,
+        "x": 670,
+        "y": 340,
         "wires": []
-    },
-    {
-        "id": "cf17dffd.b2b37",
-        "type": "function",
-        "z": "5f562f66.a301e",
-        "name": "Convert To Json to Arduino Input",
-        "func": "var sendString = '<topic>' + msg.topic + '</topic><payload>' + msg.payload.toString() + '</payload>';\nreturn {'topic':'topic','payload':sendString};",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 720,
-        "y": 120,
-        "wires": [
-            [
-                "77ac95b9.d96e8c"
-            ]
-        ]
     },
     {
         "id": "db5238ac.522718",
         "type": "function",
         "z": "5f562f66.a301e",
-        "name": "Convert Arduino Ouput to JSON",
+        "name": "Arduino to JSON",
         "func": "var end = msg.payload.indexOf(\"!\");\nvar inputString = msg.payload.substring(0,end);\nvar inputTopic = inputString.substring(inputString.indexOf(\"<topic>\") + 7, inputString.indexOf(\"</topic>\"));\nvar inputPayload = inputString.substring(inputString.indexOf(\"<payload>\") + 9, inputString.indexOf(\"</payload>\"));\nreturn {'topic':inputTopic, 'payload':inputPayload};",
         "outputs": 1,
         "noerr": 0,
-        "x": 470,
-        "y": 220,
+        "x": 400,
+        "y": 440,
         "wires": [
             [
-                "1cfa5d7b.6c46a3",
-                "b466e887.d9fb58"
+                "de47dfdd.77859"
             ]
         ]
     },
@@ -228,27 +191,90 @@
         "type": "mqtt out",
         "z": "5f562f66.a301e",
         "name": "",
-        "topic": "loopTime",
+        "topic": "",
         "qos": "0",
         "retain": "false",
         "broker": "79250bf3.365cc4",
-        "x": 790,
-        "y": 280,
+        "x": 850,
+        "y": 440,
         "wires": []
     },
     {
-        "id": "9c868d53.8a0e",
+        "id": "a66809de.9e4f08",
+        "type": "function",
+        "z": "5f562f66.a301e",
+        "name": "Json to Arduino",
+        "func": "var sendString = '<topic>' + msg.topic + '</topic><payload>' + msg.payload.toString() + '</payload>';\nreturn {'topic':'topic','payload':sendString};",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 620,
+        "y": 100,
+        "wires": [
+            [
+                "77ac95b9.d96e8c"
+            ]
+        ]
+    },
+    {
+        "id": "1b4460c6.ce06ef",
         "type": "mqtt in",
         "z": "5f562f66.a301e",
         "name": "",
-        "topic": "getLoopTime",
+        "topic": "bake1/ui/#",
         "qos": "0",
         "broker": "79250bf3.365cc4",
-        "x": 290,
-        "y": 60,
+        "x": 160,
+        "y": 100,
         "wires": [
             [
-                "cf17dffd.b2b37"
+                "a22a3a24.71b178"
+            ]
+        ]
+    },
+    {
+        "id": "e6b2fe08.e4d9b",
+        "type": "debug",
+        "z": "5f562f66.a301e",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "x": 810,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "de47dfdd.77859",
+        "type": "function",
+        "z": "5f562f66.a301e",
+        "name": "Add bake1/dma/ to topic",
+        "func": "msg.topic = 'bake1/dma/' + msg.topic;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 650,
+        "y": 440,
+        "wires": [
+            [
+                "b466e887.d9fb58"
+            ]
+        ]
+    },
+    {
+        "id": "a22a3a24.71b178",
+        "type": "function",
+        "z": "5f562f66.a301e",
+        "name": "Strip bake1/ui/ from topic",
+        "func": "msg.topic = msg.topic.substring(msg.topic.indexOf('bake1/ui/') + 9);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 350,
+        "y": 100,
+        "wires": [
+            [
+                "a66809de.9e4f08",
+                "e6b2fe08.e4d9b"
             ]
         ]
     }
