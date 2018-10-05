@@ -104,7 +104,7 @@
         "databits": "8",
         "parity": "none",
         "stopbits": "1",
-        "newline": "!",
+        "newline": "\\n",
         "bin": "false",
         "out": "char",
         "addchar": true,
@@ -157,25 +157,11 @@
         ]
     },
     {
-        "id": "1cfa5d7b.6c46a3",
-        "type": "debug",
-        "z": "5f562f66.a301e",
-        "name": "",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "true",
-        "x": 670,
-        "y": 340,
-        "wires": []
-    },
-    {
         "id": "db5238ac.522718",
         "type": "function",
         "z": "5f562f66.a301e",
         "name": "Arduino to JSON",
-        "func": "var end = msg.payload.indexOf(\"!\");\nvar inputString = msg.payload.substring(0,end);\nvar inputTopic = inputString.substring(inputString.indexOf(\"<topic>\") + 7, inputString.indexOf(\"</topic>\"));\nvar inputPayload = inputString.substring(inputString.indexOf(\"<payload>\") + 9, inputString.indexOf(\"</payload>\"));\nreturn {'topic':inputTopic, 'payload':inputPayload};",
+        "func": "var end = msg.payload.indexOf(\"\\n\");\nvar inputString = msg.payload.substring(0,end);\nvar inputTopic = inputString.substring(inputString.indexOf(\"<topic>\") + 7, inputString.indexOf(\"</topic>\"));\nvar inputPayload = inputString.substring(inputString.indexOf(\"<payload>\") + 9, inputString.indexOf(\"</payload>\"));\nreturn {'topic':inputTopic, 'payload':inputPayload};",
         "outputs": 1,
         "noerr": 0,
         "x": 400,
@@ -241,8 +227,8 @@
         "console": false,
         "tostatus": false,
         "complete": "false",
-        "x": 810,
-        "y": 160,
+        "x": 870,
+        "y": 340,
         "wires": []
     },
     {
@@ -273,8 +259,61 @@
         "y": 100,
         "wires": [
             [
-                "a66809de.9e4f08",
-                "e6b2fe08.e4d9b"
+                "a66809de.9e4f08"
+            ]
+        ]
+    },
+    {
+        "id": "c301adb7.0cb72",
+        "type": "debug",
+        "z": "5f562f66.a301e",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "x": 550,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "2ed74acd.ba7a86",
+        "type": "inject",
+        "z": "5f562f66.a301e",
+        "name": "",
+        "topic": "getQTop",
+        "payload": "0",
+        "payloadType": "num",
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "1",
+        "x": 390,
+        "y": 160,
+        "wires": [
+            [
+                "a66809de.9e4f08"
+            ]
+        ]
+    },
+    {
+        "id": "ec91640d.2f3d68",
+        "type": "inject",
+        "z": "5f562f66.a301e",
+        "name": "",
+        "topic": "getQEnable",
+        "payload": "0",
+        "payloadType": "num",
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "1",
+        "x": 400,
+        "y": 220,
+        "wires": [
+            [
+                "a66809de.9e4f08"
             ]
         ]
     }
