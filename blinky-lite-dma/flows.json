@@ -115,7 +115,7 @@
         "type": "mqtt-broker",
         "z": "",
         "name": "blinky-lite-06",
-        "broker": "blinky-lite-06.local",
+        "broker": "192.168.4.1",
         "port": "1883",
         "clientid": "device-message-adapter",
         "usetls": false,
