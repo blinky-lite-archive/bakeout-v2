@@ -1,5 +1,5 @@
 #include "device-controller.h"
-
+// comment
 int loopCount = 0;
 int loopCountMax = 1000;
 float deltaMicros = 0;

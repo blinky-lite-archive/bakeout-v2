@@ -1,3 +1,4 @@
+// comment
 boolean writeToSerial1 = false ;
 const int buffLength = 128;
 char inputBuff[buffLength];
