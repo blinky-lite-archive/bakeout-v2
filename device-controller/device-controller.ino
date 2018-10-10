@@ -46,7 +46,7 @@ boolean overILeakTrip = false;
 
 void setup()
 {
-  setupCommunications(true, 9600);
+  setupCommunications(true, 19200);
 //  Serial.begin(9600);
   delay(200);
   
@@ -70,6 +70,32 @@ void setup()
   analogWriteFrequency(qTopPin, 40000);
   analogWriteResolution(8);
   analogWrite(qTopPin,qTop);
+
+  pinMode(2, OUTPUT);     
+  digitalWrite(2, LOW);     
+  pinMode(3, OUTPUT);     
+  digitalWrite(2, LOW);     
+  pinMode(4, OUTPUT);     
+  digitalWrite(4, LOW);     
+  pinMode(5, OUTPUT);     
+  digitalWrite(5, LOW);     
+  pinMode(6, OUTPUT);     
+  digitalWrite(6, LOW);     
+  pinMode(7, OUTPUT);     
+  digitalWrite(7, LOW);     
+  pinMode(8, OUTPUT);     
+  digitalWrite(8, LOW);     
+  pinMode(9, OUTPUT);     
+  digitalWrite(9, LOW);     
+  pinMode(11, OUTPUT);     
+  digitalWrite(11, LOW);     
+  pinMode(12, OUTPUT);     
+  digitalWrite(12, LOW);     
+  pinMode(26, OUTPUT);     
+  digitalWrite(26, LOW);     
+
+
+
 
   delay(1000);
   printMessage("qEnable", intToString(qEnable));
@@ -134,7 +160,7 @@ void loop()
   overI = digitalRead(overIPin);
   overILeak = digitalRead(overILeakPin);
 
-  if ((overI == 1) && (overIOld == 0) )
+  if ((overI == 1) && (overIOld == 1) )
   {
     qEnable = 0;
     digitalWrite(qEnablePin, qEnable);
@@ -146,7 +172,8 @@ void loop()
     printMessage("overITrip", booleanToString(overITrip));
   }
   overIOld = overI;
-  if ((overILeak == 1) && (overILeakOld == 0) )
+/*
+  if ((overILeak == 1) && (overILeakOld == 1) )
   {
     qEnable = 0;
     digitalWrite(qEnablePin, qEnable);
@@ -158,7 +185,7 @@ void loop()
     printMessage("overILeakTrip", booleanToString(overILeakTrip));
   }
   overILeakOld = overILeak;
-  
+*/  
   ++loopCount;
   nowTime = micros();
   if (loopCount > loopCountMax)
@@ -179,13 +206,12 @@ void loop()
     digitalWrite(led2Pin, led2);
     digitalWrite(led3Pin, led3);
     printMessage("vAcOutMeasAvg", floatToString(vAcOutMeasAvg, 2));
-    printMessage("iAcOutMeasAvg", floatToString(iAcOutMeasAvg, 2));
+//    printMessage("iAcOutMeasAvg", floatToString(iAcOutMeasAvg, 2));
     printMessage("tempMeas1Avg", floatToString(tempMeas1Avg, 2));
-    printMessage("tempMeas2Avg", floatToString(tempMeas2Avg, 2));
-    printMessage("tempMeas3Avg", floatToString(tempMeas3Avg, 2));
-    printMessage("powerAvg", floatToString(powerAvg, 2));
+//    printMessage("tempMeas2Avg", floatToString(tempMeas2Avg, 2));
+//    printMessage("tempMeas3Avg", floatToString(tempMeas3Avg, 2));
+//    printMessage("powerAvg", floatToString(powerAvg, 2));
     printMessage("loopTime", floatToString(deltaMicros,2));
     printMessage("blinky", booleanToString(blinky));
   }
 }
-
