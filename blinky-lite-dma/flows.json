@@ -148,8 +148,8 @@
         "z": "5f562f66.a301e",
         "name": "Teensy",
         "serial": "21ff842d.62f36c",
-        "x": 230,
-        "y": 440,
+        "x": 110,
+        "y": 620,
         "wires": [
             [
                 "db5238ac.522718"
@@ -164,26 +164,20 @@
         "func": "var end = msg.payload.indexOf(\"\\n\");\nvar inputString = msg.payload.substring(0,end);\nvar inputTopic = inputString.substring(inputString.indexOf(\"<topic>\") + 7, inputString.indexOf(\"</topic>\"));\nvar inputPayload = inputString.substring(inputString.indexOf(\"<payload>\") + 9, inputString.indexOf(\"</payload>\"));\nreturn {'topic':inputTopic, 'payload':inputPayload};",
         "outputs": 1,
         "noerr": 0,
-        "x": 400,
-        "y": 440,
+        "x": 280,
+        "y": 620,
         "wires": [
             [
-                "de47dfdd.77859"
+                "b0795ef3.c662a",
+                "d74dce87.92b2e",
+                "a50496dd.749f68",
+                "93d5be6d.28d3d",
+                "e1f804f7.5289c8",
+                "1dd436a0.aed269",
+                "3f99e136.2ca8de",
+                "d692a38f.e1f6"
             ]
         ]
-    },
-    {
-        "id": "b466e887.d9fb58",
-        "type": "mqtt out",
-        "z": "5f562f66.a301e",
-        "name": "",
-        "topic": "",
-        "qos": "0",
-        "retain": "false",
-        "broker": "79250bf3.365cc4",
-        "x": 850,
-        "y": 440,
-        "wires": []
     },
     {
         "id": "a66809de.9e4f08",
@@ -218,20 +212,6 @@
         ]
     },
     {
-        "id": "e6b2fe08.e4d9b",
-        "type": "debug",
-        "z": "5f562f66.a301e",
-        "name": "",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "x": 870,
-        "y": 340,
-        "wires": []
-    },
-    {
         "id": "de47dfdd.77859",
         "type": "function",
         "z": "5f562f66.a301e",
@@ -239,8 +219,8 @@
         "func": "msg.topic = 'bake1/dma/' + msg.topic;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 650,
-        "y": 440,
+        "x": 890,
+        "y": 640,
         "wires": [
             [
                 "b466e887.d9fb58"
@@ -262,20 +242,6 @@
                 "a66809de.9e4f08"
             ]
         ]
-    },
-    {
-        "id": "c301adb7.0cb72",
-        "type": "debug",
-        "z": "5f562f66.a301e",
-        "name": "",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "x": 870,
-        "y": 300,
-        "wires": []
     },
     {
         "id": "2ed74acd.ba7a86",
@@ -308,7 +274,7 @@
         "repeat": "",
         "crontab": "",
         "once": true,
-        "onceDelay": "1",
+        "onceDelay": "1.2",
         "x": 380,
         "y": 200,
         "wires": [
@@ -328,7 +294,7 @@
         "repeat": "",
         "crontab": "",
         "once": true,
-        "onceDelay": "1",
+        "onceDelay": "1.4",
         "x": 380,
         "y": 240,
         "wires": [
@@ -348,12 +314,185 @@
         "repeat": "",
         "crontab": "",
         "once": true,
-        "onceDelay": "1",
+        "onceDelay": "1.6",
         "x": 370,
         "y": 280,
         "wires": [
             [
                 "a66809de.9e4f08"
+            ]
+        ]
+    },
+    {
+        "id": "c301adb7.0cb72",
+        "type": "debug",
+        "z": "5f562f66.a301e",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "x": 1030,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "b466e887.d9fb58",
+        "type": "mqtt out",
+        "z": "5f562f66.a301e",
+        "name": "",
+        "topic": "",
+        "qos": "0",
+        "retain": "false",
+        "broker": "79250bf3.365cc4",
+        "x": 1090,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "b0795ef3.c662a",
+        "type": "function",
+        "z": "5f562f66.a301e",
+        "name": "Get vAcOutMeasAvg",
+        "func": "if (msg.topic != 'vAcOutMeasAvg') return null;\nmsg.payload = 0.4253859 * msg.payload + 9;\nmsg.payload = Math.round(100 * msg.payload) / 100;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 540,
+        "y": 580,
+        "wires": [
+            [
+                "de47dfdd.77859",
+                "ef4bfca3.0a50f"
+            ]
+        ]
+    },
+    {
+        "id": "d74dce87.92b2e",
+        "type": "function",
+        "z": "5f562f66.a301e",
+        "name": "Get blinky",
+        "func": "if (msg.topic != 'blinky') return null;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 500,
+        "y": 420,
+        "wires": [
+            [
+                "de47dfdd.77859"
+            ]
+        ]
+    },
+    {
+        "id": "a50496dd.749f68",
+        "type": "function",
+        "z": "5f562f66.a301e",
+        "name": "Get iAcOutMeasAvg",
+        "func": "if (msg.topic != 'iAcOutMeasAvg') return null;\nmsg.payload = 0.0482248 * msg.payload - 37.76;\nmsg.payload = Math.round(100 * msg.payload) / 100;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 540,
+        "y": 700,
+        "wires": [
+            [
+                "de47dfdd.77859",
+                "ef4bfca3.0a50f"
+            ]
+        ]
+    },
+    {
+        "id": "ef4bfca3.0a50f",
+        "type": "function",
+        "z": "5f562f66.a301e",
+        "name": "calc Power",
+        "func": "context.set(msg.topic,msg.payload);\nvar power = context.get('vAcOutMeasAvg') * context.get('iAcOutMeasAvg');\npower = Math.round(100.0 * power) / 100.0;\nreturn {'topic':'power', 'payload':power};",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 530,
+        "y": 640,
+        "wires": [
+            [
+                "de47dfdd.77859"
+            ]
+        ]
+    },
+    {
+        "id": "93d5be6d.28d3d",
+        "type": "function",
+        "z": "5f562f66.a301e",
+        "name": "Get tempMeas1Avg",
+        "func": "if (msg.topic != 'tempMeas1Avg') return null;\nmsg.payload = 0.4135 * msg.payload + 15.47;\nmsg.payload = Math.round(100 * msg.payload) / 100;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 530,
+        "y": 760,
+        "wires": [
+            [
+                "de47dfdd.77859"
+            ]
+        ]
+    },
+    {
+        "id": "e1f804f7.5289c8",
+        "type": "function",
+        "z": "5f562f66.a301e",
+        "name": "Get tempMeas1Avg",
+        "func": "if (msg.topic != 'tempMeas2Avg') return null;\nmsg.payload = .4135 * msg.payload + 15.47;\nmsg.payload = Math.round(100 * msg.payload) / 100;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 530,
+        "y": 820,
+        "wires": [
+            [
+                "de47dfdd.77859"
+            ]
+        ]
+    },
+    {
+        "id": "1dd436a0.aed269",
+        "type": "function",
+        "z": "5f562f66.a301e",
+        "name": "Get overI",
+        "func": "if (msg.topic != 'overI') return null;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 500,
+        "y": 540,
+        "wires": [
+            [
+                "de47dfdd.77859"
+            ]
+        ]
+    },
+    {
+        "id": "d692a38f.e1f6",
+        "type": "function",
+        "z": "5f562f66.a301e",
+        "name": "Get qEnable",
+        "func": "if (msg.topic != 'qEnable') return null;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 510,
+        "y": 460,
+        "wires": [
+            [
+                "de47dfdd.77859"
+            ]
+        ]
+    },
+    {
+        "id": "3f99e136.2ca8de",
+        "type": "function",
+        "z": "5f562f66.a301e",
+        "name": "Get qTop",
+        "func": "if (msg.topic != 'qTop') return null;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 500,
+        "y": 500,
+        "wires": [
+            [
+                "de47dfdd.77859"
             ]
         ]
     }
