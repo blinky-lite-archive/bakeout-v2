@@ -13,7 +13,7 @@ int tempMeas3Pin = 15;
 int led1Pin = 14;
 int led2Pin = 22;
 int led3Pin = 13;
-int overIPin = 18;
+int overIPin = 2;
 int overILeakPin = 17;
 
 int qTop = 0;
@@ -36,7 +36,7 @@ boolean led1 = false;
 boolean led2 = false;
 boolean led3 = false;
 volatile boolean  overIInterrupt = false;
-boolean  overI = false;
+volatile boolean  overI = false;
 float nsamples = 6100.0;
 float nsampleRate;
 
@@ -69,8 +69,7 @@ void setup()
   analogWriteResolution(8);
   analogWrite(qTopPin,qTop);
 
-  pinMode(2, OUTPUT);     
-  digitalWrite(2, LOW);     
+  pinMode(18, INPUT);     
   pinMode(3, OUTPUT);     
   digitalWrite(2, LOW);     
   pinMode(4, OUTPUT);     
@@ -166,6 +165,7 @@ void loop()
     printMessage("overI", booleanToString(overI));
     overIInterrupt = false;
   }
+
   nowTime = millis();
 
   if ((nowTime - startTime1Hz) > 1000)
@@ -178,7 +178,6 @@ void loop()
     digitalWrite(led1Pin, led1);
     digitalWrite(led2Pin, led2);
     digitalWrite(led3Pin, led3);
-    digitalWrite(13, blinky);
     printMessage("vAcOutMeasAvg", floatToString(vAcOutMeasAvg, 2));
     printMessage("iAcOutMeasAvg", floatToString(iAcOutMeasAvg, 2));
     printMessage("tempMeas1Avg", floatToString(tempMeas1Avg, 2));
@@ -189,9 +188,11 @@ void loop()
 }
 void overIRising() 
 {
+  if (overI) return;
   digitalWrite(qEnablePin, LOW);
   analogWrite(qTopPin,0);
   overIInterrupt = true;
+  overI = true;
 }
 
 
