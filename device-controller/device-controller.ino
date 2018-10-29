@@ -37,6 +37,9 @@ boolean led2 = false;
 boolean led3 = false;
 volatile boolean  overIInterrupt = false;
 volatile boolean  overI = false;
+volatile int interruptCounter = 0;
+const int maxInterruptCounts = 3;
+
 float nsamples = 6100.0;
 float nsampleRate;
 
@@ -62,6 +65,7 @@ void setup()
   pinMode(led2Pin, OUTPUT);     
   pinMode(led3Pin, OUTPUT);     
   pinMode(13, OUTPUT);     
+//  pinMode(overIPin, INPUT_PULLUP);     
   pinMode(overIPin, INPUT);     
   pinMode(overILeakPin, INPUT);     
   digitalWrite(qEnablePin, qEnable);    
@@ -69,9 +73,10 @@ void setup()
   analogWriteResolution(8);
   analogWrite(qTopPin,qTop);
 
+//  pinMode(18, INPUT_PULLUP);     
   pinMode(18, INPUT);     
   pinMode(3, OUTPUT);     
-  digitalWrite(2, LOW);     
+  digitalWrite(3, LOW);     
   pinMode(4, OUTPUT);     
   digitalWrite(4, LOW);     
   pinMode(5, OUTPUT);     
@@ -91,7 +96,7 @@ void setup()
   pinMode(26, OUTPUT);     
   digitalWrite(26, LOW);     
 
-  attachInterrupt(overIPin, overIRising, RISING);
+  attachInterrupt(overIPin, overIInterruptHandler, HIGH);
   delay(200);
  
 }
@@ -164,6 +169,7 @@ void loop()
     printMessage("qTop", intToString(qTop));
     printMessage("overI", booleanToString(overI));
     overIInterrupt = false;
+    interruptCounter = 0;
   }
 
   nowTime = millis();
@@ -186,14 +192,16 @@ void loop()
     printMessage("blinky", booleanToString(blinky));
   }
 }
-void overIRising() 
+void overIInterruptHandler() 
 {
   if (overI) return;
+  if (interruptCounter < maxInterruptCounts)
+  {
+    ++interruptCounter;
+    return;
+  }  
   digitalWrite(qEnablePin, LOW);
   analogWrite(qTopPin,0);
   overIInterrupt = true;
   overI = true;
 }
-
-
-
