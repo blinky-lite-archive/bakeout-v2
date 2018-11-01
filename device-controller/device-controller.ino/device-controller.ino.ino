@@ -185,8 +185,7 @@ void loop()
     printMessage("qEnable", intToString(qEnable));
     rampQTop(0);
     digitalWrite(qEnablePin, qEnable);
-    overIInterrupt = false;
-    
+    overIInterrupt = false;  
   }
 
   nowTime = millis();
