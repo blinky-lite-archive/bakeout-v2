@@ -16,11 +16,11 @@ int led3Pin = 13;
 int overIPin = 2;
 int overILeakPin = 17;
 
-int qTop = 0;
-int qTopSet = 0;
+volatile int qTop = 0;
 int qEnable = 0;
 int qTopSign = 1;
-int qTopRampDelay = 1;
+int qTopRampDelay = 100;
+int heartBeatRate = 1000;
 float vAcOutMeas;
 float vAcOutMeasAvg = 0;
 float iAcOutMeas;
@@ -38,7 +38,8 @@ boolean led3 = false;
 volatile boolean  overIInterrupt = false;
 volatile boolean  overI = false;
 volatile int interruptCounter = 0;
-const int maxInterruptCounts = 3;
+volatile int maxInterruptCounts = 3;
+volatile int qTopDropPerInterrupt = 1;
 
 float nsamples = 6100.0;
 float nsampleRate;
@@ -97,6 +98,7 @@ void setup()
   digitalWrite(26, LOW);     
 
   attachInterrupt(overIPin, overIInterruptHandler, HIGH);
+  getParameters();
   delay(200);
  
 }
@@ -107,10 +109,17 @@ void loop()
   {    
     if (getInputTopic().equals("setQEnable"))
     {
-      qTop = 0;
-      analogWrite(qTopPin,qTop);
-      printMessage("qTop", intToString(qTop));
       qEnable = stringToInt(getInputPayload());
+      if (qEnable == 0)
+      {
+        rampQTop(0);
+      }
+      else
+      {
+        qTop = 0;
+        analogWrite(qTopPin,qTop);
+        printMessage("qTop", intToString(qTop));
+      }
       digitalWrite(qEnablePin, qEnable);
       printMessage("qEnable", intToString(qEnable));
       if (qEnable > 0)
@@ -119,34 +128,42 @@ void loop()
         printMessage("overI", booleanToString(overI));
       }
     }
-    if (getInputTopic().equals("getQEnable")) printMessage("qEnable", intToString(qEnable));
-    
     if (getInputTopic().equals("setQTop"))
     {
-      qTopSet = stringToInt(getInputPayload());
-      qTopSign = 1;
-      if (qTopSet < qTop) qTopSign = -1;
-      while (qTopSet != qTop)
-      {
-        qTop = qTop + qTopSign;
-        delay(qTopRampDelay);
-        analogWrite(qTopPin,qTop);
-      }
+      qTop = stringToInt(getInputPayload());
+      analogWrite(qTopPin,qTop);
       printMessage("qTop", intToString(qTop));
     }
-    if (getInputTopic().equals("getQTop")) printMessage("qTop", intToString(qTop));
-    
-    if (getInputTopic().equals("setQTopRampDelay")) qTopRampDelay = stringToInt(getInputPayload());
-    if (getInputTopic().equals("getQTopRampDelay")) printMessage("qTopRampDelay", intToString(qTopRampDelay));
-
+    if (getInputTopic().equals("setQTopRampDelay")) 
+    {
+      qTopRampDelay = stringToInt(getInputPayload());
+      printMessage("qTopRampDelay", intToString(qTopRampDelay));
+    }
     if (getInputTopic().equals("setNsamples"))
     {
       nsamples = stringToFloat(getInputPayload());
       nsampleRate = 1.0 / nsamples;
+      printMessage("nsamples", floatToString(nsamples, 2));
     }
-    if (getInputTopic().equals("getNsamples")) printMessage("nsamples", floatToString(nsamples, 2));
+    if (getInputTopic().equals("setHeartBeatRate"))
+    {
+      heartBeatRate = stringToInt(getInputPayload());
+      printMessage("heartBeatRate", intToString(heartBeatRate));
+    }
+    if (getInputTopic().equals("setMaxInterruptCounts"))
+    {
+      maxInterruptCounts = stringToInt(getInputPayload());
+      printMessage("maxInterruptCounts", intToString(maxInterruptCounts));
+    }
+    if (getInputTopic().equals("setQTopDropPerInterrupt"))
+    {
+      qTopDropPerInterrupt = stringToInt(getInputPayload());
+      printMessage("qTopDropPerInterrupt", intToString(qTopDropPerInterrupt));
+    }
+
     
-    if (getInputTopic().equals("getOverI")) printMessage("overI", booleanToString(overI));
+    if (getInputTopic().equals("getParameters"))    getParameters();
+
   }
 
   vAcOutMeas = (float) analogRead(vAcOutMeasPin);
@@ -162,19 +179,18 @@ void loop()
 
   if (overIInterrupt)
   {
-    qEnable = 0;
-    qTop = 0;
     overI = true;
-    printMessage("qEnable", intToString(qEnable));
-    printMessage("qTop", intToString(qTop));
     printMessage("overI", booleanToString(overI));
+    qEnable = 0;
+    printMessage("qEnable", intToString(qEnable));
+    rampQTop(0);
+    digitalWrite(qEnablePin, qEnable);
     overIInterrupt = false;
-    interruptCounter = 0;
   }
 
   nowTime = millis();
 
-  if ((nowTime - startTime1Hz) > 1000)
+  if ((nowTime - startTime1Hz) > heartBeatRate)
   {
     startTime1Hz = nowTime;
     blinky = !blinky;
@@ -192,16 +208,40 @@ void loop()
     printMessage("blinky", booleanToString(blinky));
   }
 }
+void getParameters()
+{
+  printMessage("qEnable", intToString(qEnable));
+  printMessage("qTop", intToString(qTop));
+  printMessage("qTopRampDelay", intToString(qTopRampDelay));
+  printMessage("nsamples", floatToString(nsamples, 2));
+  printMessage("overI", booleanToString(overI));
+  printMessage("heartBeatRate", intToString(heartBeatRate));
+  printMessage("qTopRampDelay", intToString(qTopRampDelay));
+  printMessage("maxInterruptCounts", intToString(maxInterruptCounts));
+  printMessage("qTopDropPerInterrupt", intToString(qTopDropPerInterrupt));
+}
+void rampQTop(int qTopSet)
+{
+    qTopSign = 1;
+    if (qTopSet < qTop) qTopSign = -1;
+    while (qTopSet != qTop)
+    {
+      qTop = qTop + qTopSign;
+      delay(qTopRampDelay);
+      analogWrite(qTopPin,qTop);
+      printMessage("qTop", intToString(qTop));
+    }
+}
 void overIInterruptHandler() 
 {
-  if (overI) return;
   if (interruptCounter < maxInterruptCounts)
   {
     ++interruptCounter;
     return;
-  }  
-  digitalWrite(qEnablePin, LOW);
-  analogWrite(qTopPin,0);
+  }
+  qTop = qTop - qTopDropPerInterrupt;
+  if (qTop < 0) qTop = 0;
+  analogWrite(qTopPin,qTop);
   overIInterrupt = true;
-  overI = true;
+  interruptCounter = 0;
 }
